@@ -3,6 +3,7 @@ const cors = require("cors");
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 const ObjectId = require("mongodb").ObjectId;
+const { query } = require("express");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -41,6 +42,44 @@ async function run() {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
       res.json(result);
+    });
+    // POST API
+    app.post("/users", async (req, res) => {
+      const users = req.body;
+      const result = await usersCollection.insertOne(users);
+      res.json(result);
+    });
+    // PUT API
+    app.put("/users", async (req, res) => {
+      const users = req.body;
+      const filter = { email: users.email };
+      const options = { upsert: true };
+      const updateDoc = { $set: users };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.json(result);
+    });
+    // PUT API
+    app.put("/users/admin", async (req, res) => {
+      const users = req.body;
+      const filter = { email: users.email };
+      const updateDoc = { $set: { role: "admin" } };
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.json(result);
+    });
+    // GET API
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      let isAdmin = false;
+      if (user?.role === "admin") {
+        isAdmin = true;
+      }
+      res.json({ admin: isAdmin });
     });
     // GET API
     app.get("/products", async (req, res) => {
