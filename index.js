@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const ObjectID = require("mongodb").ObjectID;
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
+const ObjectId = require("mongodb").ObjectId;
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -27,8 +27,8 @@ async function run() {
     const database = client.db("carhunt");
     const productsCollection = database.collection("products");
     const ordersCollection = database.collection("orders");
-    const usersCollection = database.collection("users");
     const reviewCollection = database.collection("review");
+    const usersCollection = database.collection("users");
 
     // POST API
     app.post("/products", async (req, res) => {
@@ -39,7 +39,6 @@ async function run() {
     // POST API
     app.post("/review", async (req, res) => {
       const review = req.body;
-      console.log(review);
       const result = await reviewCollection.insertOne(review);
       res.json(result);
     });
@@ -62,11 +61,19 @@ async function run() {
     // GET API
     app.get("/order", async (req, res) => {
       const email = req.query.email;
-      console.log(email);
       const query = { email: email };
       const result = await ordersCollection.find(query).toArray();
       res.json(result);
     });
+    // DELETE API
+    app.delete("/cancel/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: ObjectId(id) };
+      const result = await ordersCollection.deleteOne(query);
+      res.json(result);
+    });
+    //
   } finally {
     // await client.close();
   }
