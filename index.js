@@ -28,6 +28,7 @@ async function run() {
     const productsCollection = database.collection("products");
     const ordersCollection = database.collection("orders");
     const usersCollection = database.collection("users");
+    const reviewCollection = database.collection("review");
 
     // POST API
     app.post("/products", async (req, res) => {
@@ -35,16 +36,35 @@ async function run() {
       const result = await productsCollection.insertOne(product);
       res.json(result);
     });
+    // POST API
+    app.post("/review", async (req, res) => {
+      const review = req.body;
+      console.log(review);
+      const result = await reviewCollection.insertOne(review);
+      res.json(result);
+    });
     // GET API
     app.get("/products", async (req, res) => {
       const result = await productsCollection.find({}).toArray();
       res.json(result);
     });
+    // GET API
+    app.get("/review", async (req, res) => {
+      const result = await reviewCollection.find({}).toArray();
+      res.json(result);
+    });
     // POST API
     app.post("/order", async (req, res) => {
       const product = req.body;
-      console.log(product);
       const result = await ordersCollection.insertOne(product);
+      res.json(result);
+    });
+    // GET API
+    app.get("/order", async (req, res) => {
+      const email = req.query.email;
+      console.log(email);
+      const query = { email: email };
+      const result = await ordersCollection.find(query).toArray();
       res.json(result);
     });
   } finally {
