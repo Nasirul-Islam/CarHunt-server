@@ -62,6 +62,16 @@ async function run() {
       );
       res.json(result);
     });
+    // PUT API for order
+    app.put("/confirmOrder/:id", async (req, res) => {
+      const id = req.params.id;
+      const order = req.body;
+      console.log(id, "order:", order);
+      const filter = { _id: ObjectId(id) };
+      const updateDoc = { $set: { status: order.status } };
+      const result = await ordersCollection.updateOne(filter, updateDoc);
+      res.json(result);
+    });
     // PUT API for user
     app.put("/users/admin", async (req, res) => {
       const users = req.body;
@@ -98,6 +108,11 @@ async function run() {
       res.json(result);
     });
     // GET API for order
+    app.get("/allorder", async (req, res) => {
+      const result = await ordersCollection.find({}).toArray();
+      res.json(result);
+    });
+    // GET API for order
     app.get("/order", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
@@ -106,6 +121,13 @@ async function run() {
     });
     // DELETE API for cancel order
     app.delete("/cancel/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await ordersCollection.deleteOne(query);
+      res.json(result);
+    });
+    // DELETE API for delete order
+    app.delete("/deleteOrder/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await ordersCollection.deleteOne(query);
