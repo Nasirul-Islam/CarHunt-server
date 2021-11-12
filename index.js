@@ -31,25 +31,25 @@ async function run() {
     const reviewCollection = database.collection("review");
     const usersCollection = database.collection("users");
 
-    // POST API
+    // POST API for products
     app.post("/products", async (req, res) => {
       const product = req.body;
       const result = await productsCollection.insertOne(product);
       res.json(result);
     });
-    // POST API
+    // POST API for review
     app.post("/review", async (req, res) => {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
       res.json(result);
     });
-    // POST API
+    // POST API for user
     app.post("/users", async (req, res) => {
       const users = req.body;
       const result = await usersCollection.insertOne(users);
       res.json(result);
     });
-    // PUT API
+    // PUT API for user
     app.put("/users", async (req, res) => {
       const users = req.body;
       const filter = { email: users.email };
@@ -62,7 +62,7 @@ async function run() {
       );
       res.json(result);
     });
-    // PUT API
+    // PUT API for user
     app.put("/users/admin", async (req, res) => {
       const users = req.body;
       const filter = { email: users.email };
@@ -70,7 +70,7 @@ async function run() {
       const result = await usersCollection.updateOne(filter, updateDoc);
       res.json(result);
     });
-    // GET API
+    // GET API for user
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
@@ -81,30 +81,30 @@ async function run() {
       }
       res.json({ admin: isAdmin });
     });
-    // GET API
+    // GET API for products
     app.get("/products", async (req, res) => {
       const result = await productsCollection.find({}).toArray();
       res.json(result);
     });
-    // GET API
+    // GET API for review
     app.get("/review", async (req, res) => {
       const result = await reviewCollection.find({}).toArray();
       res.json(result);
     });
-    // POST API
+    // POST API for order
     app.post("/order", async (req, res) => {
       const product = req.body;
       const result = await ordersCollection.insertOne(product);
       res.json(result);
     });
-    // GET API
+    // GET API for order
     app.get("/order", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const result = await ordersCollection.find(query).toArray();
       res.json(result);
     });
-    // DELETE API
+    // DELETE API for cancel order
     app.delete("/cancel/:id", async (req, res) => {
       const id = req.params.id;
       console.log(id);
@@ -112,6 +112,7 @@ async function run() {
       const result = await ordersCollection.deleteOne(query);
       res.json(result);
     });
+    //
     //
   } finally {
     // await client.close();
